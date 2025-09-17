@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>To-Do List App</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 400px; margin: 40px auto; }
+    h1 { text-align: center; }
+    #new-task { width: 70%; padding: 8px; }
+    #add-btn { padding: 8px 12px; }
+    ul { list-style-type: none; padding: 0; }
+    li { padding: 8px 0; display: flex; justify-content: space-between; }
+    .delete-btn { background: #e74c3c; color: white; border: none; padding: 4px 8px; cursor: pointer;}
+  </style>
+</head>
+<body>
+  <h1>To-Do List</h1>
+  <input type="text" id="new-task" placeholder="Add a new task" />
+  <button id="add-btn">Add</button>
+  <ul id="task-list"></ul>
+  <script>
+    // Load tasks from local storage
+    function loadTasks() {
+      const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+      const taskList = document.getElementById('task-list');
+      taskList.innerHTML = '';
+      tasks.forEach((task, index) => {
+        const li = document.createElement('li');
+        li.textContent = task;
+        const btn = document.createElement('button');
+        btn.textContent = 'Delete';
+        btn.className = 'delete-btn';
+        btn.onclick = function() { deleteTask(index); };
+        li.appendChild(btn);
+        taskList.appendChild(li);
+      });
+    }
+
+    // Add task
+    document.getElementById('add-btn').onclick = function() {
+      const input = document.getElementById('new-task');
+      const task = input.value.trim();
+      if (task) {
+        const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+        tasks.push(task);
+        localStorage.setItem('tasks', JSON.stringify(tasks));
+        input.value = '';
+        loadTasks();
+      }
+    };
+
+    // Delete task
+    function deleteTask(index) {
+      const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+      tasks.splice(index, 1);
+      localStorage.setItem('tasks', JSON.stringify(tasks));
+      loadTasks();
+    }
+
+    // Initial load
+    loadTasks();
+  </script>
+</body>
+</html>
